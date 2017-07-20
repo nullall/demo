@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B4355A01F1F27EA0090E11F /* DoughnutChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B43559F1F1F27EA0090E11F /* DoughnutChartView.m */; };
 		5B47BAB51D7A6B1600B77CB5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B47BAB41D7A6B1600B77CB5 /* main.m */; };
 		5B47BAB81D7A6B1600B77CB5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B47BAB71D7A6B1600B77CB5 /* AppDelegate.m */; };
 		5B47BABB1D7A6B1600B77CB5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B47BABA1D7A6B1600B77CB5 /* ViewController.m */; };
@@ -37,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B43559E1F1F27EA0090E11F /* DoughnutChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoughnutChartView.h; sourceTree = "<group>"; };
+		5B43559F1F1F27EA0090E11F /* DoughnutChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoughnutChartView.m; sourceTree = "<group>"; };
+		5B4355A11F1F2C2B0090E11F /* Define.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Define.h; sourceTree = "<group>"; };
 		5B47BAB01D7A6B1600B77CB5 /* Text_Circle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Text_Circle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B47BAB41D7A6B1600B77CB5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5B47BAB61D7A6B1600B77CB5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 		5B47BAB21D7A6B1600B77CB5 /* Text_Circle */ = {
 			isa = PBXGroup;
 			children = (
+				5B4355A11F1F2C2B0090E11F /* Define.h */,
 				5B47BAB61D7A6B1600B77CB5 /* AppDelegate.h */,
 				5B47BAB71D7A6B1600B77CB5 /* AppDelegate.m */,
 				5B47BAB91D7A6B1600B77CB5 /* ViewController.h */,
@@ -120,6 +125,8 @@
 				5B47BAE71D7A6C2A00B77CB5 /* CircleView.m */,
 				5B4A90721E2A01A90066F72A /* AnnulusView.h */,
 				5B4A90731E2A01A90066F72A /* AnnulusView.m */,
+				5B43559E1F1F27EA0090E11F /* DoughnutChartView.h */,
+				5B43559F1F1F27EA0090E11F /* DoughnutChartView.m */,
 			);
 			path = Text_Circle;
 			sourceTree = "<group>";
@@ -286,6 +293,7 @@
 				5B47BABB1D7A6B1600B77CB5 /* ViewController.m in Sources */,
 				5B47BAB81D7A6B1600B77CB5 /* AppDelegate.m in Sources */,
 				5B47BAB51D7A6B1600B77CB5 /* main.m in Sources */,
+				5B4355A01F1F27EA0090E11F /* DoughnutChartView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

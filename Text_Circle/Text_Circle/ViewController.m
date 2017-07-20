@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "CircleView.h"
+#import "DoughnutChartView.h"
+#import "Define.h"
 @interface ViewController ()
 {
     CircleView *progressView;
@@ -16,6 +18,7 @@
     UIButton *btn;
 }
 @property (weak, nonatomic) IBOutlet CircleView *circleView;
+@property (strong, nonatomic) DoughnutChartView *doughnutChartView;
 @end
 
 @implementation ViewController
@@ -48,7 +51,15 @@
     self.circleView.progressValue=0.3f;
     self.circleView.image=[UIImage imageNamed:@"complete"];
     
-    [self initAnnulus];
+//    [self initAnnulus];
+    
+    self.doughnutChartView=[[DoughnutChartView alloc]initWithFrame:CGRectMake(0, 300, screenWidth, 250)];
+    [self.view addSubview:self.doughnutChartView];
+    self.doughnutChartView.chartDiameter=140;
+    self.doughnutChartView.count1=arc4random()%10000;
+    self.doughnutChartView.count2=arc4random()%10000;
+    self.doughnutChartView.progressStrokeWidth=30;
+    [self.doughnutChartView drawChart];
 }
 
 -(void)reloadAction:(id)sender{
@@ -61,7 +72,10 @@
     progressView.image=[UIImage imageNamed:@"complete"];
     [self.view addSubview:progressView];
     NSLog(@"%f",progressView.progressValue);
-
+    
+    self.doughnutChartView.count1=arc4random()%10000;
+    self.doughnutChartView.count2=arc4random()%10000;
+    [self.doughnutChartView drawChart];
 }
 
 - (void)didReceiveMemoryWarning {
