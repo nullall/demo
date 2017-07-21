@@ -10,6 +10,7 @@
 #import "CircleView.h"
 #import "DoughnutChartView.h"
 #import "Define.h"
+#import "HistogramView.h"
 @interface ViewController ()
 {
     CircleView *progressView;
@@ -19,6 +20,8 @@
 }
 @property (weak, nonatomic) IBOutlet CircleView *circleView;
 @property (strong, nonatomic) DoughnutChartView *doughnutChartView;
+@property (strong, nonatomic) HistogramView *histogramView;
+
 @end
 
 @implementation ViewController
@@ -53,13 +56,29 @@
     
 //    [self initAnnulus];
     
-    self.doughnutChartView=[[DoughnutChartView alloc]initWithFrame:CGRectMake(0, 300, screenWidth, 250)];
+    self.doughnutChartView=[[DoughnutChartView alloc]initWithFrame:CGRectMake(0, 250, screenWidth, 250)];
     [self.view addSubview:self.doughnutChartView];
     self.doughnutChartView.chartDiameter=140;
     self.doughnutChartView.count1=arc4random()%10000;
     self.doughnutChartView.count2=arc4random()%10000;
     self.doughnutChartView.progressStrokeWidth=30;
-    [self.doughnutChartView drawChart];
+    self.doughnutChartView.color1=UIColorFromHex(0xFFCE5A);
+    self.doughnutChartView.color2=UIColorFromHex(0x7ecef4);
+    self.doughnutChartView.type1=@"未施工";
+    self.doughnutChartView.type2=@"已施工";
+    [self.doughnutChartView reloadView];
+    
+    self.histogramView=[[HistogramView alloc]initWithFrame:CGRectMake(0,500, screenWidth, 200)];
+    [self.view addSubview:self.histogramView];
+    self.histogramView.chartWidth=286;
+    self.histogramView.chartHeight=155;
+    self.histogramView.barWidth=30;
+    self.histogramView.dataFontSize=14;
+    self.histogramView.dataTypeFontSize=12;
+    self.histogramView.dataArray=@[@"123",@"245",@"65"];
+    self.histogramView.colorArray=@[UIColorFromHex(0x5c667e),UIColorFromHex(0xc33430),UIColorFromHex(0xd2d2d2)];
+    self.histogramView.dataTypeArray=@[@"正常",@"告警",@"异常（离线）"];
+    [self.histogramView reloadView];
 }
 
 -(void)reloadAction:(id)sender{
@@ -75,8 +94,24 @@
     
     self.doughnutChartView.count1=arc4random()%10000;
     self.doughnutChartView.count2=arc4random()%10000;
-    [self.doughnutChartView drawChart];
+    [self.doughnutChartView reloadView];
+    
+    self.histogramView.dataFontSize=12;
+    self.histogramView.dataTypeFontSize=10;
+    int max=arc4random()%10+1;
+    self.histogramView.barWidth=((self.histogramView.chartWidth-150)/max>30)?30:(self.histogramView.chartWidth-150)/max;
+    NSMutableArray *dataArray=[[NSMutableArray alloc]init];
+    NSMutableArray *colorArray=[[NSMutableArray alloc]init];
+    for (int i=0; i<max; i++) {
+        [dataArray addObject:[NSString stringWithFormat:@"%d",arc4random()%1000]];
+        [colorArray addObject:UIColorFromHex(arc4random()%0xFFFFFF)];
+    }
+    self.histogramView.dataArray=[dataArray copy];
+    self.histogramView.colorArray=[colorArray copy];
+    [self.histogramView reloadView];
+    
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

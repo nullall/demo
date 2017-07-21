@@ -6,13 +6,7 @@
 //  Copyright (c) 2011年 TSoftime Company. All rights reserved.
 //
 
-//release的时候去掉debug的nslog
 #ifdef DEBUG
-//#define NSLog(...) NSLog(__VA_ARGS__)
-//#define debugMethod() NSLog(@"%s", __func__)
-//#else
-//#define NSLog(...)
-//#define debugMethod()
 #endif
 
 #define BundleID [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleIdentifier"]
@@ -58,16 +52,5 @@
 #define titleColorBlue RGBA(00, 92, 255, 1)
 #define mainForeColor RGBA(50, 217, 207, 1)
 
-#define EnabledColor [UIColor colorWithHexString:@"0B85E8"]
-#define UnableColor [UIColor colorWithHexString:@"C2C2C2"]
-
-#define xNotificationShowMenu                   @"xNotificationShowMenu"
-
-
-//tabbar高度
-#define XIITarbarHeight 58
-
-//tabbar高度
-#define DeviceInfoViewH 125
 
 

@@ -9,11 +9,21 @@
 #import <UIKit/UIKit.h>
 
 @interface DoughnutChartView : UIView
+/**圆形直径*/
 @property(assign, nonatomic) CGFloat chartDiameter;
+/**圆环宽度*/
+@property(assign, nonatomic) CGFloat progressStrokeWidth;
+/**数据*/
 @property(assign, nonatomic) CGFloat count1;
 @property(assign, nonatomic) CGFloat count2;
-@property(assign, nonatomic) CGFloat progressStrokeWidth;   //圆环宽度
+/**颜色*/
 @property(strong, nonatomic) UIColor *color1;
 @property(strong, nonatomic) UIColor *color2;
--(void)drawChart;
+/**数据类型*/
+@property(strong, nonatomic) NSString *type1;
+@property(strong, nonatomic) NSString *type2;
+/**
+ *  刷新图表
+ */
+-(void)reloadView;
 @end
