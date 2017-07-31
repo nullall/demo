@@ -92,9 +92,7 @@
     [self.view addSubview:progressView];
     NSLog(@"%f",progressView.progressValue);
     
-    self.doughnutChartView.count1=arc4random()%10000;
-    self.doughnutChartView.count2=arc4random()%10000;
-    [self.doughnutChartView reloadView];
+
     
     self.histogramView.dataFontSize=12;
     self.histogramView.dataTypeFontSize=10;
@@ -110,6 +108,37 @@
     self.histogramView.colorArray=[colorArray copy];
     [self.histogramView reloadView];
     
+//    self.doughnutChartView.count1=arc4random()%10000;
+//    self.doughnutChartView.count2=arc4random()%10000;
+    self.doughnutChartView.dataArray=[dataArray copy];
+    self.doughnutChartView.colorArray=[colorArray copy];
+    [self.doughnutChartView reloadView];
+    
+    /*
+    CAShapeLayer *layer=[CAShapeLayer layer];
+    UIBezierPath *bp=[UIBezierPath bezierPathWithRect:CGRectMake(250, 50, 20, 100)];
+    layer.path=bp.CGPath;
+    layer.strokeColor=[UIColor orangeColor].CGColor;
+    layer.fillColor=[UIColor orangeColor].CGColor;
+    [self.view.layer addSublayer:layer];
+    //动画效果
+    CABasicAnimation *endAni=[CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
+//    endAni.fromValue=[NSNumber numberWithDouble:0];
+//    endAni.toValue=[NSNumber numberWithDouble:1];
+    endAni.fromValue=@(1);
+    endAni.toValue=@(0);
+        endAni.duration=1.5;
+//    [layer addAnimation:endAni forKey:nil];
+    
+    CABasicAnimation * fillAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+    fillAnimation.duration = 1.5;
+    fillAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    fillAnimation.fillMode = kCAFillModeForwards;
+    fillAnimation.removedOnCompletion = NO;
+    fillAnimation.fromValue = (__bridge id)([UIBezierPath bezierPathWithRect:CGRectMake(250, 50+100, 20, 0)].CGPath);
+    fillAnimation.toValue = (__bridge id)([UIBezierPath bezierPathWithRect:CGRectMake(250, 50, 20, 100)].CGPath);
+    [layer addAnimation:fillAnimation forKey:nil];
+     */
 }
 
 

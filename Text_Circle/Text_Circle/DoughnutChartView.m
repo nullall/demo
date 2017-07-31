@@ -9,7 +9,11 @@
 #import "DoughnutChartView.h"
 #import "Define.h"
 
-@interface DoughnutChartView ()
+@interface DoughnutChartView (){
+    NSMutableArray<NSNumber*> *scaleArray;  //每个数据所占比例
+    NSMutableArray<NSNumber*> *angleArray;  //累加占比
+    CGFloat amount;     //总的个数
+}
 @property(strong,nonatomic) UIView *chartView;
 @end
 
@@ -33,10 +37,35 @@
     return self;
 }
 
+-(void)setDataArray:(NSArray<NSString *> *)dataArray{
+    _dataArray=dataArray;
+    scaleArray=[[NSMutableArray alloc]init];
+    angleArray=[[NSMutableArray alloc]init];
+    amount=0;
+    for (NSString *count in _dataArray) {
+        amount+=[count floatValue];
+    }
+    if (amount>0) {
+        for (NSString *count in _dataArray) {
+            [scaleArray addObject:[NSNumber numberWithFloat:([count floatValue]/amount)]];
+        }
+    }
+    [angleArray addObject:[NSNumber numberWithFloat:0]];
+    for (int i=0; i<_dataArray.count; i++) {
+        CGFloat num=0;
+        for (int j=0; j<=i; j++){
+            num+=[_dataArray[j] floatValue];
+        }
+        [angleArray addObject:[NSNumber numberWithFloat:num/amount]];
+    }
+    
+}
+
 
 -(void)initViews{
     self.chartView=[[UIView alloc]initWithFrame:CGRectMake((screenWidth-self.chartDiameter)/2, 25, self.chartDiameter, self.chartDiameter)];
     [self addSubview:_chartView];
+//    [self drawChart];
     [self drawChart];
     [self addOtherView];
 }
@@ -48,6 +77,43 @@
     [self initViews];
 }
 
+-(void)drawChart{
+    if (scaleArray.count==0) {
+        return ;
+    }
+
+    CGPoint circleCenter;//中心坐标
+    CGFloat diam=_chartDiameter;//直径
+    CGFloat radius;//内环半径
+    //中心点的位置
+    circleCenter.x=_chartView.bounds.size.width/2;
+    circleCenter.y=_chartView.bounds.size.height/2;
+    radius=(diam-_progressStrokeWidth)/2.f;
+    for (int i=0; i<scaleArray.count; i++) {
+        CAShapeLayer *layer=[CAShapeLayer layer];
+        layer.fillColor=nil;
+        layer.frame=_chartView.bounds;
+        layer.lineWidth=_progressStrokeWidth;
+        layer.strokeColor=_colorArray[i].CGColor;
+        [_chartView.layer addSublayer:layer];
+        UIBezierPath *bezierPath;
+        bezierPath=[UIBezierPath bezierPathWithArcCenter:circleCenter radius:radius startAngle:(2*M_PI)*[angleArray[i] floatValue]-M_PI_4 endAngle:(2*M_PI)*[angleArray[i+1] floatValue]-M_PI_4 clockwise:YES];
+        layer.path=bezierPath.CGPath;
+        //动画效果
+        CABasicAnimation *endAni=[CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+        endAni.fromValue=[NSNumber numberWithDouble:0];
+        endAni.toValue=[NSNumber numberWithDouble:1];
+        //    endAni.duration=1.5;
+        [layer addAnimation:endAni forKey:nil];
+        NSLog(@"==>%f",(_chartDiameter/2+5)*sinf(M_PI*[angleArray[i+1] floatValue]-M_PI_4));
+        //+5是为了不完全贴合
+        CGFloat x=_chartView.center.x+(_chartDiameter/2+5)*cosf(2*M_PI*[angleArray[i] floatValue]+M_PI*[scaleArray[i] floatValue]-M_PI_4);
+        CGFloat y=_chartView.center.y+(_chartDiameter/2+5)*sinf(2*M_PI*[angleArray[i] floatValue]+M_PI*[scaleArray[i] floatValue]-M_PI_4);
+        [self setData:[NSString stringWithFormat:@"%@个 %.2f%%",_dataArray[i],[scaleArray[i] floatValue]*100] dataType:_dataTypeArray[i] color:_colorArray[i] origin:CGPointMake(x, y)];
+    }
+    
+}
+/*
 -(void)drawChart{
     CAShapeLayer *layer1;
     CAShapeLayer *layer2;
@@ -136,7 +202,7 @@
     [self setData:[NSString stringWithFormat:@"%.0f个 %.2f%%",_count2,scale2*100] dataType:_type2 color:_color2 origin:CGPointMake(x2, y2)];
 
 }
-
+*/
 
 /**
  *  数据类型提示
@@ -147,10 +213,15 @@
  *  @param point    位置
  */
 -(void)setData:(NSString *)data dataType:(NSString *)dataType color:(UIColor *)color origin:(CGPoint)point{
+    CGFloat width=100;
+    CGFloat height=35;
     if (point.x<self.center.x) {
-        point.x=point.x-100;
+        point.x=point.x-width;
     }
-    UIView *dataView=[[UIView alloc]initWithFrame:CGRectMake(point.x, point.y, 100, 35)];
+    if (point.y<self.chartView.center.y) {
+        point.y=point.y-height;
+    }
+    UIView *dataView=[[UIView alloc]initWithFrame:CGRectMake(point.x, point.y, width, height)];
     [self addSubview:dataView];
     
     /*
@@ -162,11 +233,19 @@
     [solidShapeLayer setStrokeColor:[UIColorFromHex(0xEEF3F7) CGColor]];
     solidShapeLayer.lineWidth = 1.0f ;
     if (point.x>self.center.x) {
-        CGPathMoveToPoint(solidShapePath, NULL, 0, 0);
+        if (point.y<_chartView.center.y) {
+            CGPathMoveToPoint(solidShapePath, NULL, 0, height);
+        }else{
+            CGPathMoveToPoint(solidShapePath, NULL, 0, 0);
+        }
         CGPathAddLineToPoint(solidShapePath, NULL, 13,17);
         CGPathAddLineToPoint(solidShapePath, NULL, 100,17);
     }else{
-        CGPathMoveToPoint(solidShapePath, NULL, 100, 0);
+        if (point.y<_chartView.center.y) {
+            CGPathMoveToPoint(solidShapePath, NULL, 100, height);
+        }else{
+            CGPathMoveToPoint(solidShapePath, NULL, 100, 0);
+        }
         CGPathAddLineToPoint(solidShapePath, NULL, 100-13,17);
         CGPathAddLineToPoint(solidShapePath, NULL, 0,17);
     }
@@ -183,9 +262,18 @@
     solidLine.strokeColor = color.CGColor;
     solidLine.fillColor = color.CGColor;
     if (point.x>self.center.x) {
-        CGPathAddEllipseInRect(solidPath, nil, CGRectMake(0, 0, 3, 3));
+        if (point.y<_chartView.center.y) {
+            CGPathAddEllipseInRect(solidPath, nil, CGRectMake(0, height-3, 3, 3));
+        }else{
+            CGPathAddEllipseInRect(solidPath, nil, CGRectMake(0, 0, 3, 3));
+        }
+        
     }else{
-        CGPathAddEllipseInRect(solidPath, nil, CGRectMake(100-3, 0, 3, 3));
+        if (point.y<_chartView.center.y) {
+            CGPathAddEllipseInRect(solidPath, nil, CGRectMake(100-3, height-3, 3, 3));
+        }else{
+            CGPathAddEllipseInRect(solidPath, nil, CGRectMake(100-3, 0, 3, 3));
+        }
     }
     solidLine.path = solidPath;
     CGPathRelease(solidPath);
@@ -237,7 +325,7 @@
     amountLabel.textColor=UIColorFromHex(0x575757);
     amountLabel.textAlignment=NSTextAlignmentCenter;
     amountLabel.font=[UIFont systemFontOfSize:13];
-    amountLabel.text=[NSString stringWithFormat:@"共%.0f个",_count1+_count2];
+    amountLabel.text=[NSString stringWithFormat:@"共%.0f个",amount];
     [self.chartView addSubview:amountLabel];
     amountLabel.alpha=0;
     [UIView animateWithDuration:0.3 animations:^{
@@ -246,26 +334,26 @@
     
     
     //标注颜色提示
-    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, self.chartView.frame.origin.y+_chartDiameter+50, self.bounds.size.width, 15)];
-    [self addSubview:view];
-    UIView *view1=[[UIView alloc]initWithFrame:CGRectMake(self.center.x-67, 0, 15, 15)];
-    view1.backgroundColor=_color1;
-    [view addSubview:view1];
-    UIView *view2=[[UIView alloc]initWithFrame:CGRectMake(self.center.x+23, 0, 15, 15)];
-    view2.backgroundColor=_color2;
-    [view addSubview:view2];
-    
-    UILabel *label1=[[UILabel alloc]initWithFrame:CGRectMake(view1.frame.origin.x+21, 0, 45, 15)];
-    label1.text=_type1;
-    label1.font=[UIFont systemFontOfSize:12];
-    label1.textColor=UIColorFromHex(0x7C7C7C);
-    [view addSubview:label1];
-    
-    UILabel *label2=[[UILabel alloc]initWithFrame:CGRectMake(view2.frame.origin.x+21, 0, 45, 15)];
-    label2.text=_type2;
-    label2.font=[UIFont systemFontOfSize:12];
-    label2.textColor=UIColorFromHex(0x7C7C7C);
-    [view addSubview:label2];
+//    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, self.chartView.frame.origin.y+_chartDiameter+50, self.bounds.size.width, 15)];
+//    [self addSubview:view];
+//    UIView *view1=[[UIView alloc]initWithFrame:CGRectMake(self.center.x-67, 0, 15, 15)];
+//    view1.backgroundColor=_color1;
+//    [view addSubview:view1];
+//    UIView *view2=[[UIView alloc]initWithFrame:CGRectMake(self.center.x+23, 0, 15, 15)];
+//    view2.backgroundColor=_color2;
+//    [view addSubview:view2];
+//    
+//    UILabel *label1=[[UILabel alloc]initWithFrame:CGRectMake(view1.frame.origin.x+21, 0, 45, 15)];
+//    label1.text=_type1;
+//    label1.font=[UIFont systemFontOfSize:12];
+//    label1.textColor=UIColorFromHex(0x7C7C7C);
+//    [view addSubview:label1];
+//    
+//    UILabel *label2=[[UILabel alloc]initWithFrame:CGRectMake(view2.frame.origin.x+21, 0, 45, 15)];
+//    label2.text=_type2;
+//    label2.font=[UIFont systemFontOfSize:12];
+//    label2.textColor=UIColorFromHex(0x7C7C7C);
+//    [view addSubview:label2];
     
 }
 @end

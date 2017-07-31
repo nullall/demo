@@ -22,6 +22,13 @@
 /**数据类型*/
 @property(strong, nonatomic) NSString *type1;
 @property(strong, nonatomic) NSString *type2;
+
+/**不同颜色数据*/
+@property(strong, nonatomic)NSArray<UIColor *> *colorArray;
+/**数据*/
+@property(strong, nonatomic)NSArray<NSString *> *dataArray;
+/**数据类型*/
+@property(strong, nonatomic)NSArray<NSString *> *dataTypeArray;
 /**
  *  刷新图表
  */

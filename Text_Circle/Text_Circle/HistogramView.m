@@ -75,14 +75,39 @@
         frame.size.height=[count floatValue]/max*barMaxHeight;
         frame.origin.y=_chartHeight-frame.size.height;
         UIView *barView=[[UIView alloc]initWithFrame:frame];
-        if (i<_colorArray.count) {
-            barView.backgroundColor=_colorArray[i];
-        }else{
-            barView.backgroundColor=self.defaultColor;
-        }
+//        if (i<_colorArray.count) {
+//            barView.backgroundColor=_colorArray[i];
+//        }else{
+//            barView.backgroundColor=self.defaultColor;
+//        }
         [self addSubview:barView];
         
-        //个数label
+        CAShapeLayer *layer=[CAShapeLayer layer];
+        UIBezierPath *bp=[UIBezierPath bezierPathWithRect:barView.bounds];
+        layer.path=bp.CGPath;
+        if (i<_colorArray.count) {
+            layer.strokeColor=_colorArray[i].CGColor;
+            layer.fillColor=_colorArray[i].CGColor;
+        }else{
+            layer.strokeColor=self.defaultColor.CGColor;
+            layer.fillColor=self.defaultColor.CGColor;
+        }
+        [barView.layer addSublayer:layer];
+        //动画效果
+        CGRect fromframe=barView.bounds;
+        fromframe.origin.y=barView.bounds.size.height;
+        fromframe.size.height=0;
+        CABasicAnimation * fillAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+        fillAnimation.duration = 0.3;
+        fillAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        fillAnimation.fillMode = kCAFillModeForwards;
+        fillAnimation.removedOnCompletion = NO;
+        fillAnimation.fromValue = (__bridge id)([UIBezierPath bezierPathWithRect:fromframe].CGPath);
+        fillAnimation.toValue = (__bridge id)([UIBezierPath bezierPathWithRect:barView.bounds].CGPath);
+        [layer addAnimation:fillAnimation forKey:nil];
+
+        
+        /**个数label*/
         CGRect countLabelFrame;
         countLabelFrame.origin.y=frame.origin.y-17;
         countLabelFrame.origin.x=frame.origin.x-15;
@@ -97,8 +122,15 @@
         countLabel.font=[UIFont systemFontOfSize:_dataFontSize];
         countLabel.text=[NSString stringWithFormat:@"%@个",count];
         [self addSubview:countLabel];
+        //显示动画
+        countLabel.alpha=0;
+        [UIView animateWithDuration:0.3 animations:^{
+            countLabel.alpha=1;
+        } completion:^(BOOL finished) {
+            
+        }];
         
-        //数据类型标题
+        /**数据类型标题*/
         CGRect typeLabelFrame;
         typeLabelFrame.origin.y=_chartHeight+7;
         typeLabelFrame.origin.x=frame.origin.x-30;
